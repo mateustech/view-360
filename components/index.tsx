@@ -3,6 +3,7 @@ import {useState} from "react";
 export const View360 = () => {
     const [deg,setDeg] = useState<number>(1)
     const handleChange = (event: any) => {
+        console.log(event.target.value)
         setDeg(event.target.value)
     }
 
@@ -17,10 +18,10 @@ export const View360 = () => {
                     className="absolute w-full h-full z-10"
                     type="range"
                     min={1}
-                    max={60}
+                    max={59}
                     value={deg}
                     onChange={event => handleChange(event)}
-                    step="1"/>
+                    step="2"/>
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                     className="w-full"
