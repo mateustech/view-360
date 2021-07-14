@@ -47,7 +47,7 @@ export const View360 = () => {
                     value={deg}
                     onChange={event => handleChange(event,"deg")}
                     step="1"/>
-                {/* eslint-disable-next-line @next/next/no-img-element */}
+
                 {deg == 15 ?
                     <a
                         style={{top: "50%",left: "50%"}}
@@ -56,6 +56,7 @@ export const View360 = () => {
                         <span className="text-xs m-0 text-gray-700 font-bold">ENTRAR</span>
                     </a>
                     : null}
+                {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                     className="w-full"
                     src={`/${frame}/frame-${deg}.jpeg`}
