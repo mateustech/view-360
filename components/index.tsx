@@ -1,129 +1,71 @@
-import Image from "next/image";
-import {useState} from "react";
-export const View360 = () => {
-    const [deg,setDeg] = useState<number>(1)
-    const [frame,setFrame] = useState<string>("frames-eric")
-    const [limits,setLimits] = useState<{ min:number,max:number }>({min: 1,max:33})
+/* eslint-disable @next/next/no-img-element */
+import React, { useCallback, useState } from "react";
+import Image from 'next/image'
 
-    const [degInt,setDegInt] = useState<number>(1)
-    const [int,setInt] = useState<number>(1)
-    const handleChange = (event: any,type: string) => {
-        if(type === "deg"){
-            setDeg(event.target.value)
-        }
-        else if(type === "degInt"){
-            setDegInt(event.target.value)
-        }
-        else if(type === "int"){
-            setInt(event.target.value)
-        }
-    }
-    const handleOpen = () => {
-        setFrame("frames-interior")
-        setLimits({min: 1,max: 9})
-        setDeg(1)
-    }
-    const generateArrayByCount = (count: number): number[] => {
-        var array: number[] = []
-        let i:number = 1
-        while(i <= count){
-            array.push(i)
-            i += 1
-        }
-        return array
-    }
-    return (
-        <div className="rounded relative w-screen h-screen flex items-center justify-center bg-gray-200">
-            <div
-                className="relative"
-                style={{width: 1040, height: 780}}
-            >
-                <input
-                    style={{opacity: 0}}
-                    className="absolute w-full h-full z-10"
-                    type="range"
-                    min={limits.min}
-                    max={limits.max}
-                    value={deg}
-                    onChange={event => handleChange(event,"deg")}
-                    step="1"/>
+type View360Props = {
+  amount: number; //Number of images
+  fileName: string;
+  extension: Extension;
+  initIndexImage?: number;
+};
 
-                {deg == 15 ?
-                    <a
-                        style={{top: "50%",left: "50%"}}
-                        onClick={() => handleOpen()}
-                        className="absolute bg-gray-200 p-1 rounded shadow flex items-center justify-center cursor-pointer z-20">
-                        <span className="text-xs m-0 text-gray-700 font-bold">ENTRAR</span>
-                    </a>
-                    : null}
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                    className="w-full"
-                    src={`/${frame}/frame-${deg}.jpeg`}
-                    // src={`/frames-interior/frame-${deg}.jpeg`}
-                    alt={"frame"}
-                />
-            </div>
-            {generateArrayByCount(33).map((item,key) => {
-                return (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img key={key} className="hidden" src={`/${frame}/frame-${item}.jpeg`}/>
-                )
-            })}
-            {/*<div*/}
-            {/*    className="relative"*/}
-            {/*    style={{width:1040, height: 780}}*/}
-            {/*>*/}
-            {/*    <input*/}
-            {/*        style={{opacity: 0}}*/}
-            {/*        className="absolute w-full h-full z-10"*/}
-            {/*        type="range"*/}
-            {/*        min={1}*/}
-            {/*        max={9}*/}
-            {/*        value={degInt}*/}
-            {/*        onChange={event => handleChange(event,"degInt")}*/}
-            {/*        step="1"/>*/}
-            {/*    /!* eslint-disable-next-line @next/next/no-img-element *!/*/}
-            {/*    <img*/}
-            {/*        className="w-full"*/}
-            {/*        src={`/frames-interior/frame-${degInt}.jpeg`}*/}
-            {/*        // src={`/frames-interior/frame-${deg}.jpeg`}*/}
-            {/*        alt={"frame"}*/}
-            {/*    />*/}
-            {/*</div>*/}
-            {/*{generateArrayByCount(9).map((item,key) => {*/}
-            {/*    return (*/}
-            {/*        // eslint-disable-next-line @next/next/no-img-element*/}
-            {/*        <img key={key} className="hidden" src={`/frames-interior/frame-${item}.jpeg`}/>*/}
-            {/*    )*/}
-            {/*})}*/}
-            {/*<div*/}
-            {/*    className="relative"*/}
-            {/*    style={{width:1040, height: 780}}*/}
-            {/*>*/}
-            {/*    <input*/}
-            {/*        style={{opacity: 0}}*/}
-            {/*        className="absolute w-full h-full z-10"*/}
-            {/*        type="range"*/}
-            {/*        min={1}*/}
-            {/*        max={5}*/}
-            {/*        value={int}*/}
-            {/*        onChange={event => handleChange(event,"int")}*/}
-            {/*        step="1"/>*/}
-            {/*    /!* eslint-disable-next-line @next/next/no-img-element *!/*/}
-            {/*    <img*/}
-            {/*        className="w-full"*/}
-            {/*        src={`/interior/frame-${int}.jpeg`}*/}
-            {/*        alt={"frame"}*/}
-            {/*    />*/}
-            {/*</div>*/}
-            {/*{generateArrayByCount(5).map((item,key) => {*/}
-            {/*    return (*/}
-            {/*        // eslint-disable-next-line @next/next/no-img-element*/}
-            {/*        <img key={key} className="hidden" src={`/interior/frame-${item}.jpeg`}/>*/}
-            {/*    )*/}
-            {/*})}*/}
-        </div>
-    )
-}
+type Limits = {
+  min: number;
+  max: number;
+};
 
+type Extension = "jpeg" | "png" | "jpg";
+
+export const View360 = (props: View360Props) => {
+  const { amount, extension, fileName, initIndexImage = 1 } = props;
+
+  const [indexImage, setIndexImage] = useState(initIndexImage);
+
+  const limits: Limits = {
+    min: 1, //Init count
+    max: amount,
+  };
+
+  const handleChange = useCallback((event: any) => {
+    setIndexImage(amount - event.target.value);
+  }, [amount,setIndexImage]);
+
+
+
+  return (
+    <div  className="max-w-md p-1 bg-white rounded relative cursor-pointer">
+      <InputRange
+        min={limits.min}
+        max={limits.max}
+        value={indexImage}
+        onChange={handleChange}
+      />
+
+      <img src={`/${fileName}-${indexImage}.${extension}`} alt={"Image of visualization 360°"} />
+    </div>
+  );
+};
+
+type InputRangeProps = {
+  min: number;
+  max: number;
+  value: number;
+  onChange(event: any): void;
+};
+
+const InputRange = (props: InputRangeProps) => {
+  const { min, max, value, onChange } = props;
+
+  return (
+    <input
+      style={{ opacity: 0,cursor: "move" }}
+      className="absolute w-full h-full z-10"
+      type="range"
+      min={min}
+      max={max}
+      value={value}
+      onChange={onChange}
+      step="1"
+    />
+  );
+};

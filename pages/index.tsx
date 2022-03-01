@@ -11,8 +11,9 @@ export default function Home() {
           <link rel="icon" href="/favicon.ico" />
         </Head>
 
-        <main className="w-screen h-screen bg-gray-100 flex items-center justify-center">
-            <View360/>
+        <main className="w-screen h-screen bg-gray-100 flex items-center justify-center space-x-6">
+            <View360 amount={29} fileName="frames/frame" extension='jpeg'/>
+            <View360 amount={29} fileName="frames-360/frames" extension='jpeg'/>
         </main>
       </div>
   )
